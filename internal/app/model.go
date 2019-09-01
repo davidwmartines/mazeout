@@ -8,9 +8,68 @@ type maze struct {
 	width       int
 	height      int
 	grid        g.Grid
-	walls       []*g.Point
+	walls       map[*g.Point]*g.Point
 	location    *g.Point
 	destination *g.Point
+}
+
+type direction string
+
+const left direction = "left"
+const right direction = "right"
+const up direction = "up"
+const down direction = "down"
+
+func (maze *maze) isValid(dir direction) bool {
+	next := getNext(maze, dir)
+	return next != nil
+}
+
+func (maze *maze) isWall(dir direction) bool {
+	next := getNext(maze, dir)
+	if next == nil {
+		panic("invalid direction")
+	}
+	_, contains := maze.walls[next]
+	return contains
+}
+
+func getNext(maze *maze, dir direction) *g.Point {
+	loc := maze.location
+	neighbors := maze.grid.Neighbors(loc)
+
+	var next *g.Point
+	for _, n := range neighbors {
+		if dir == left {
+			if n.Row == loc.Row && n.Col == loc.Col-1 {
+				next = n
+				break
+			}
+		}
+		if dir == right {
+			if n.Row == loc.Row && n.Col == loc.Col+1 {
+				next = n
+				break
+			}
+		}
+		if dir == up {
+			if n.Col == loc.Col && n.Row == loc.Row-1 {
+				next = n
+				break
+			}
+		}
+		if dir == down {
+			if n.Col == loc.Col && n.Row == loc.Row+1 {
+				next = n
+				break
+			}
+		}
+	}
+	return next
+}
+
+func (maze *maze) move(dir direction) {
+	maze.location = getNext(maze, dir)
 }
 
 func (maze *maze) atEnd() bool {
@@ -30,20 +89,45 @@ func newMaze(height, width int) *maze {
 	return &maze
 }
 
-func buildWalls(grid g.Grid) (walls []*g.Point) {
+func buildWalls(grid g.Grid) map[*g.Point]*g.Point {
 
+	//sample 4x4
+
+	walls := []*g.Point{}
+
+	//top
+
+	walls = append(walls, grid[0][0])
 	walls = append(walls, grid[0][1])
 	walls = append(walls, grid[0][2])
-	walls = append(walls, grid[2][1])
-	walls = append(walls, grid[2][2])
-	return
+	walls = append(walls, grid[0][3])
+
+	//bottom
+	walls = append(walls, grid[3][0])
+	walls = append(walls, grid[3][1])
+	walls = append(walls, grid[3][2])
+	walls = append(walls, grid[3][3])
+
+	//left
+	walls = append(walls, grid[2][0])
+
+	//right
+	walls = append(walls, grid[1][3])
+
+	//obstacles
+	walls = append(walls, grid[1][2])
+
+	wallMap := make(map[*g.Point]*g.Point)
+	for _, wall := range walls {
+		wallMap[wall] = wall
+	}
+	return wallMap
 }
 
 func findExit(maze *maze) *g.Point {
-	lastRow := maze.grid[len(maze.grid)-1]
-	return lastRow[len(lastRow)-1]
+	return maze.grid[2][3]
 }
 
 func findStart(maze *maze) *g.Point {
-	return maze.grid[0][0]
+	return maze.grid[1][0]
 }

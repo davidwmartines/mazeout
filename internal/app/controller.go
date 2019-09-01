@@ -6,7 +6,7 @@ import (
 
 var model *maze
 
-var directions = map[string]string{"l": "left", "r": "right", "u": "up", "d": "down"}
+var directions = map[string]direction{"l": left, "r": right, "u": up, "d": down}
 
 // Start begins a new maze puzzle session.
 func Start() {
@@ -15,7 +15,7 @@ func Start() {
 
 	fmt.Println("Help me through the maze!")
 	fmt.Println("Tell me which way to go - Left (l), Right (r), Up (u), or Down (d).")
-	fmt.Printf("Hint: the maze is %v spaces wide by %v spaces high!\n", model.width, model.height)
+	fmt.Printf("Hint: the maze is a 0-indexed grid of %v rows by %v columns!\n", model.height, model.width)
 
 	for !model.atEnd() {
 		move()
@@ -25,15 +25,32 @@ func Start() {
 }
 
 func move() {
-	fmt.Printf("I am at space %v, %v.\n", model.location.Col+1, model.location.Row+1)
+	fmt.Printf("I am at row %v, column %v.\n", model.location.Row, model.location.Col)
 	dir := prompt()
-
+	valid := isValid(dir)
+	for !valid {
+		dir = prompt()
+		valid = isValid(dir)
+	}
 	fmt.Printf("Moving %v\n", dir)
+	model.move(dir)
 }
 
-func prompt() string {
+func isValid(dir direction) bool {
+	if !model.isValid(dir) {
+		fmt.Println("Can't go that way.")
+		return false
+	}
+	if model.isWall(dir) {
+		fmt.Printf("Can't go %v into wall!\n", dir)
+		return false
+	}
+	return true
+}
+
+func prompt() direction {
 	var input string
-	fmt.Println("which way?")
+	fmt.Print("which way? ")
 	fmt.Scanln(&input)
 	if dir, ok := directions[input]; ok {
 		return dir
