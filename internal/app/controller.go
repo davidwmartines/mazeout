@@ -20,7 +20,7 @@ func Start() {
 	for !model.atEnd() {
 		move()
 	}
-	fmt.Println("Thanks! I made it out!")
+	fmt.Println("Yay! I made it out. Thank you!")
 	return
 }
 
