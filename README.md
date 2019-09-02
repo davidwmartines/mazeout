@@ -32,5 +32,5 @@ which way? u
 Can't go up into wall!
 which way? r
 Moving right
-You made it out!
+Yay! I made it out. Thank you!
 ```
