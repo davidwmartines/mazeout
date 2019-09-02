@@ -2,6 +2,7 @@ package app
 
 import g "github.com/davidwmartines/mazeout/internal/grid"
 
+// builder that makes a hard-coded 4x4 maze.
 func exampleBuilder(maze *maze) {
 
 	grid := maze.grid

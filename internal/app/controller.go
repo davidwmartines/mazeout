@@ -11,11 +11,14 @@ var directions = map[string]direction{"l": left, "r": right, "u": up, "d": down}
 // Start begins a new maze puzzle session.
 func Start() {
 
-	model = newMaze(4, 4, "example")
+	//model = newMaze(4, 4, "example")
+	model = newMaze(10, 20, "life")
 
 	fmt.Println("Help me through the maze!")
 	fmt.Println("Tell me which way to go - Left (l), Right (r), Up (u), or Down (d).")
-	fmt.Printf("Hint: the maze is a 0-indexed grid of %v rows by %v columns!\n", model.height, model.width)
+	fmt.Printf("Hint: the maze is a 0-indexed grid of %v rows by %v columns, with %v wall points.\n", model.height, model.width, len(model.walls))
+
+	show(model)
 
 	for !model.atEnd() {
 		move()

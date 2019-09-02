@@ -8,6 +8,8 @@ func makeBuilder(builderName string) builder {
 
 	case "example":
 		return exampleBuilder
+	case "life":
+		return lifeBuilder
 	default:
 		panic(fmt.Sprintf("unknown builder name: '%v'", builderName))
 	}

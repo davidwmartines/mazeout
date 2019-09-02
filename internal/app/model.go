@@ -14,6 +14,7 @@ type maze struct {
 	start       *g.Point
 }
 
+// builder is a func that creates the walls and establishes start and destination points.
 type builder func(maze *maze)
 
 type direction string
