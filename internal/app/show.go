@@ -9,10 +9,10 @@ func show(maze *maze) {
 		for _, point := range row {
 			if _, iswall := maze.walls[point]; iswall {
 				rowOut += "█"
-			} else if point == maze.start {
-				rowOut += " "
+			} else if point == maze.location {
+				rowOut += "☻"
 			} else if point == maze.destination {
-				rowOut += "*"
+				rowOut += "⚑"
 			} else {
 				rowOut += " "
 			}
