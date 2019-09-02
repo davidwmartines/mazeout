@@ -12,7 +12,7 @@ var directions = map[string]direction{"l": left, "r": right, "u": up, "d": down}
 func Start() {
 
 	//model = newMaze(4, 4, "example")
-	model = newMaze(10, 20, "life")
+	model = newMaze(10, 30, "life")
 
 	fmt.Println("Help me through the maze!")
 	fmt.Println("Tell me which way to go - Left (l), Right (r), Up (u), or Down (d).")

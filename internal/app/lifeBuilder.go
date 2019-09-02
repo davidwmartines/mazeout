@@ -35,8 +35,10 @@ func lifeBuilder(maze *maze) {
 	for _, row := range maze.grid {
 		for _, point := range row {
 			if _, iswall := maze.walls[point]; !iswall {
-				maze.start = point
-				break
+				if len(maze.grid.Neighbors(point)) > 3 {
+					maze.start = point
+					break
+				}
 			}
 		}
 		if maze.start != nil {
@@ -44,18 +46,45 @@ func lifeBuilder(maze *maze) {
 		}
 	}
 
-	//set destination to first non-wall point working backwards
+	//set destination to first non-wall point && non-corner, working backwards
 	for rowIndex := len(maze.grid) - 1; rowIndex >= 0; rowIndex-- {
 		row := maze.grid[rowIndex]
 		for pointIndex := len(row) - 1; pointIndex >= 0; pointIndex-- {
 			point := row[pointIndex]
 			if _, iswall := maze.walls[point]; !iswall {
-				maze.destination = point
-				break
+				if len(maze.grid.Neighbors(point)) > 3 {
+					maze.destination = point
+					break
+				}
 			}
 		}
 		if maze.destination != nil {
 			break
+		}
+	}
+
+	//add boundary walls
+	//top
+	for _, point := range maze.grid[0] {
+		if point != maze.start && point != maze.destination {
+			maze.walls[point] = point
+		}
+	}
+	//bottom
+	for _, point := range maze.grid[len(maze.grid)-1] {
+		if point != maze.start && point != maze.destination {
+			maze.walls[point] = point
+		}
+	}
+	//left/right
+	for _, row := range maze.grid {
+		leftPoint := row[0]
+		if leftPoint != maze.start && leftPoint != maze.destination {
+			maze.walls[leftPoint] = leftPoint
+		}
+		rightPoint := row[len(row)-1]
+		if rightPoint != maze.start && rightPoint != maze.destination {
+			maze.walls[rightPoint] = rightPoint
 		}
 	}
 }
@@ -70,7 +99,7 @@ func pickGenerations(maze *maze, seed life.Seed) int {
 	source := rand.NewSource(time.Now().UnixNano())
 	generator := rand.New(source)
 	min := 25
-	max := 35
+	max := 55
 	return generator.Intn(max-min+1) + min
 
 }
