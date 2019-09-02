@@ -11,6 +11,7 @@ type maze struct {
 	walls       map[*g.Point]*g.Point
 	location    *g.Point
 	destination *g.Point
+	start       *g.Point
 }
 
 type direction string
@@ -19,6 +20,20 @@ const left direction = "left"
 const right direction = "right"
 const up direction = "up"
 const down direction = "down"
+
+func newMaze(height, width int) *maze {
+
+	maze := maze{}
+	maze.width = width
+	maze.height = height
+	maze.grid = g.Create(height, width)
+
+	build(&maze)
+
+	maze.location = maze.start
+
+	return &maze
+}
 
 func (maze *maze) isValid(dir direction) bool {
 	next := getNext(maze, dir)
@@ -76,27 +91,18 @@ func (maze *maze) atEnd() bool {
 	return maze.location == maze.destination
 }
 
-func newMaze(height, width int) *maze {
+func build(maze *maze) {
 
-	maze := maze{}
-	maze.width = width
-	maze.height = height
-	maze.grid = g.Create(height, width)
-
-	maze.walls = buildWalls(maze.grid)
-	maze.destination = findExit(&maze)
-	maze.location = findStart(&maze)
-	return &maze
-}
-
-func buildWalls(grid g.Grid) map[*g.Point]*g.Point {
+	grid := maze.grid
 
 	//sample 4x4
+
+	maze.destination = grid[2][3]
+	maze.start = grid[1][0]
 
 	walls := []*g.Point{}
 
 	//top
-
 	walls = append(walls, grid[0][0])
 	walls = append(walls, grid[0][1])
 	walls = append(walls, grid[0][2])
@@ -117,17 +123,8 @@ func buildWalls(grid g.Grid) map[*g.Point]*g.Point {
 	//obstacles
 	walls = append(walls, grid[1][2])
 
-	wallMap := make(map[*g.Point]*g.Point)
+	maze.walls = make(map[*g.Point]*g.Point)
 	for _, wall := range walls {
-		wallMap[wall] = wall
+		maze.walls[wall] = wall
 	}
-	return wallMap
-}
-
-func findExit(maze *maze) *g.Point {
-	return maze.grid[2][3]
-}
-
-func findStart(maze *maze) *g.Point {
-	return maze.grid[1][0]
 }
