@@ -26,8 +26,8 @@ func Start() {
 
 func move() {
 	fmt.Printf("I am at row %v, column %v.\n", model.location.Row, model.location.Col)
-	dir := prompt()
-	valid := isValid(dir)
+	var dir direction
+	var valid = false
 	for !valid {
 		dir = prompt()
 		valid = isValid(dir)
