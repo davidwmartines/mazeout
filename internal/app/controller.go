@@ -58,7 +58,7 @@ func isValid(dir direction) bool {
 		if helpsUsed < maxHelps {
 			return true
 		}
-		fmt.Println("You have used all your help! ☹")
+		fmt.Println("Sorry, you have used all your help!")
 		return false
 	}
 	if !model.isValid(dir) {
