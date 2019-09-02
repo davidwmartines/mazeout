@@ -35,7 +35,7 @@ func lifeBuilder(maze *maze) {
 	for _, row := range maze.grid {
 		for _, point := range row {
 			if _, iswall := maze.walls[point]; !iswall {
-				if len(maze.grid.Neighbors(point)) > 3 {
+				if !isCorner(maze, point) {
 					maze.start = point
 					break
 				}
@@ -52,7 +52,7 @@ func lifeBuilder(maze *maze) {
 		for pointIndex := len(row) - 1; pointIndex >= 0; pointIndex-- {
 			point := row[pointIndex]
 			if _, iswall := maze.walls[point]; !iswall {
-				if len(maze.grid.Neighbors(point)) > 3 {
+				if !isCorner(maze, point) {
 					maze.destination = point
 					break
 				}
@@ -66,24 +66,24 @@ func lifeBuilder(maze *maze) {
 	//add boundary walls
 	//top
 	for _, point := range maze.grid[0] {
-		if point != maze.start && point != maze.destination {
+		if !isStartOrDestination(maze, point) {
 			maze.walls[point] = point
 		}
 	}
 	//bottom
 	for _, point := range maze.grid[len(maze.grid)-1] {
-		if point != maze.start && point != maze.destination {
+		if !isStartOrDestination(maze, point) {
 			maze.walls[point] = point
 		}
 	}
 	//left/right
 	for _, row := range maze.grid {
 		leftPoint := row[0]
-		if leftPoint != maze.start && leftPoint != maze.destination {
+		if !isStartOrDestination(maze, leftPoint) {
 			maze.walls[leftPoint] = leftPoint
 		}
 		rightPoint := row[len(row)-1]
-		if rightPoint != maze.start && rightPoint != maze.destination {
+		if !isStartOrDestination(maze, rightPoint) {
 			maze.walls[rightPoint] = rightPoint
 		}
 	}
@@ -102,4 +102,12 @@ func pickGenerations(maze *maze, seed life.Seed) int {
 	max := 55
 	return generator.Intn(max-min+1) + min
 
+}
+
+func isCorner(maze *maze, point *gr.Point) bool {
+	return len(maze.grid.Neighbors(point)) == 3
+}
+
+func isStartOrDestination(maze *maze, point *gr.Point) bool {
+	return point == maze.start || point == maze.destination
 }
