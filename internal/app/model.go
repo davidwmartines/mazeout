@@ -4,6 +4,8 @@ import (
 	g "github.com/davidwmartines/mazeout/internal/grid"
 )
 
+const maxHelps = 10
+
 type maze struct {
 	width       int
 	height      int
@@ -12,6 +14,7 @@ type maze struct {
 	location    *g.Point
 	destination *g.Point
 	start       *g.Point
+	helpsUsed   int
 }
 
 // builder is a func that creates the walls and establishes start and destination points.
@@ -23,6 +26,9 @@ const left direction = "left"
 const right direction = "right"
 const up direction = "up"
 const down direction = "down"
+const help direction = "help"
+
+var directions = map[string]direction{"l": left, "r": right, "u": up, "d": down, "h": help}
 
 func newMaze(height, width int, builderName string) *maze {
 

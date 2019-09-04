@@ -6,14 +6,6 @@ import (
 
 var model *maze
 
-const maxHelps = 10
-
-var helpsUsed int
-
-const help direction = "help"
-
-var directions = map[string]direction{"l": left, "r": right, "u": up, "d": down, "h": help}
-
 // Start begins a new maze puzzle session.
 func Start() {
 
@@ -44,8 +36,8 @@ func move() {
 	}
 	if dir == help {
 		show(model)
-		helpsUsed++
-		fmt.Printf("You have used %v of %v available helps.\n", helpsUsed, maxHelps)
+		model.helpsUsed++
+		fmt.Printf("You have used %v of %v available helps.\n", model.helpsUsed, maxHelps)
 		move()
 		return
 	}
@@ -55,7 +47,7 @@ func move() {
 
 func isValid(dir direction) bool {
 	if dir == help {
-		if helpsUsed < maxHelps {
+		if model.helpsUsed < maxHelps {
 			return true
 		}
 		fmt.Println("Sorry, you have used all your help!")
